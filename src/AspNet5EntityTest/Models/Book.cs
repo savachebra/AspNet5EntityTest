@@ -26,7 +26,6 @@ namespace AspNet5EntityTest.Models
         [StringLength(30)]
         public string Genre { get; set; }
 
-        [ScaffoldColumn(false)]
         public int AuthorId { get; set; }
 
         //Navigation property

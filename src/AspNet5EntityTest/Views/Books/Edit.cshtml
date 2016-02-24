@@ -11,8 +11,14 @@
         <h4>Book</h4>
         <hr />
         <input type="hidden" asp-for="BookId" />
-        <input type="hidden" asp-for="AuthorId" />
         <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Author" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="AuthorId" asp-items="(SelectList)@ViewData["bookAuthor"]" class="form-control"></select>
+                <span asp-validation-for="AuthorId" class="text-danger" />
+            </div>
+        </div>
         <div class="form-group">
             <label asp-for="Genre" class="col-md-2 control-label"></label>
             <div class="col-md-10">

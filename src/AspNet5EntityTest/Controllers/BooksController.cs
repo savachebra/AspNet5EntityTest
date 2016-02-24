@@ -65,7 +65,7 @@ namespace AspNet5EntityTest.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "Author");
+            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName");
             return View();
         }
 
@@ -80,7 +80,7 @@ namespace AspNet5EntityTest.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "Author", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -97,7 +97,7 @@ namespace AspNet5EntityTest.Controllers
             {
                 return HttpNotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "Author", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -112,7 +112,7 @@ namespace AspNet5EntityTest.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["AuthorId"] = new SelectList(_context.Set<Author>(), "AuthorId", "Author", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_context.Author.ToList(), "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
