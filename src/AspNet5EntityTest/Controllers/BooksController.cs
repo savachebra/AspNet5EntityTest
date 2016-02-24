@@ -53,7 +53,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Single(m => m.BookId == id);
+            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -92,7 +92,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Single(m => m.BookId == id);
+            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -125,7 +125,8 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Single(m => m.BookId == id);
+            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
+
             if (book == null)
             {
                 return HttpNotFound();
