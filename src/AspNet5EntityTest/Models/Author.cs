@@ -18,6 +18,8 @@ namespace AspNet5EntityTest.Models
         [Display(Name = "First name")]
         public string FirstMidName { get; set; }
 
+        public string Country { get; set; }
+
         public virtual ICollection<Book> Books { get; set; }
     }
 }
