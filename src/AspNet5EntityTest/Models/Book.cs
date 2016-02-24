@@ -12,7 +12,7 @@ namespace AspNet5EntityTest.Models
         public int BookId { get; set; }
 
         [Required]
-        [MaxLength(200)]
+        [StringLength(200, MinimumLength = 3)]
         public string Title { get; set; }
 
         [Range(1000, 3000)]
@@ -21,7 +21,9 @@ namespace AspNet5EntityTest.Models
         [Range(1, 500)]
         public decimal Price { get; set; }
 
-        [MaxLength(50)]
+        [Required]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
+        [StringLength(30)]
         public string Genre { get; set; }
 
         [ScaffoldColumn(false)]
