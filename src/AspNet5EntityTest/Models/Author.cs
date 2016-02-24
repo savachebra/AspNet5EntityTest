@@ -13,11 +13,15 @@ namespace AspNet5EntityTest.Models
 
         [Required]
         [Display(Name ="Last name")]
+        [StringLength(50)]
         public string LastName { get; set; }
 
+        [Required]
         [Display(Name = "First name")]
+        [StringLength(50)]
         public string FirstMidName { get; set; }
 
+        [StringLength(30)]
         public string Country { get; set; }
 
         public virtual ICollection<Book> Books { get; set; }
