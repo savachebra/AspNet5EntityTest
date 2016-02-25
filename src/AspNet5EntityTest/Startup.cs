@@ -20,6 +20,7 @@ using Microsoft.AspNet.StaticFiles;
 using Microsoft.AspNet.FileProviders;
 using AspNet5EntityTest.ViewModels.Options;
 using AspNet5EntityTest.EFConfiguration;
+using AspNet5EntityTest.Repositories;
 
 namespace AspNet5EntityTest
 {
@@ -74,6 +75,8 @@ namespace AspNet5EntityTest
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<IAuthorRepository, AuthorRepository>();
 
             services.AddApplicationInsightsTelemetry(Configuration);
 

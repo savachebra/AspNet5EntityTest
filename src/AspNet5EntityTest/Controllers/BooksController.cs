@@ -4,44 +4,30 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using AspNet5EntityTest.Models;
 using Microsoft.AspNet.Authorization;
+using AspNet5EntityTest.Repositories;
+using System.Collections.Generic;
 
 namespace AspNet5EntityTest.Controllers
 {
     [Authorize]
     public class BooksController : Controller
     {
-        private ApplicationDbContext _context;
+        private IBookRepository _books;
+        private IAuthorRepository _authors;
 
-        public BooksController(ApplicationDbContext context)
+        public BooksController(IBookRepository books, IAuthorRepository authors)
         {
-            _context = context;    
+            _books = books;
+            _authors = authors;
         }
 
         // GET: Books
         public IActionResult Index(string bookGenre, string searchString)
         {
-            var genres = from b in _context.Book
-                         orderby b.Genre
-                         select b.Genre;
-
-            genres = genres.Distinct();
+            IEnumerable<string> genres = _books.GetAllBookGenres();
             ViewData["bookGenre"] = new SelectList(genres);
 
-            var books = from b in _context.Book
-                        select b;
-
-            if (searchString?.Length > 0)
-            {
-                books = books.Where(b => b.Title.Contains(searchString));
-            }
-
-            if (bookGenre?.Length > 0)
-            {
-                books = books.Where(b => b.Genre == bookGenre);
-            }
-
-            books = books.Include(b => b.Author);
-
+            IEnumerable<Book> books = _books.Find(bookGenre, searchString, true);
             return View(books);
         }
 
@@ -53,7 +39,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
+            Book book = _books.GetById(id.Value, true);
             if (book == null)
             {
                 return HttpNotFound();
@@ -65,7 +51,7 @@ namespace AspNet5EntityTest.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName");
+            ViewData["bookAuthor"] = new SelectList(_authors.ListAll(), "AuthorId", "FullName");
             return View();
         }
 
@@ -76,11 +62,10 @@ namespace AspNet5EntityTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Book.Add(book);
-                _context.SaveChanges();
+                _books.Add(book);
                 return RedirectToAction("Index");
             }
-            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_authors.ListAll(), "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -92,12 +77,12 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
+            Book book = _books.GetById(id.Value, true);
             if (book == null)
             {
                 return HttpNotFound();
             }
-            ViewData["bookAuthor"] = new SelectList(_context.Author, "AuthorId", "FullName", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_authors.ListAll(), "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -108,11 +93,10 @@ namespace AspNet5EntityTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Update(book);
-                _context.SaveChanges();
+                _books.Update(book);
                 return RedirectToAction("Index");
             }
-            ViewData["bookAuthor"] = new SelectList(_context.Author.ToList(), "AuthorId", "FullName", book.AuthorId);
+            ViewData["bookAuthor"] = new SelectList(_authors.ListAll(), "AuthorId", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -125,7 +109,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Book book = _context.Book.Include(b => b.Author).Single(b => b.BookId == id);
+            Book book = _books.GetById(id.Value, true);
 
             if (book == null)
             {
@@ -140,9 +124,8 @@ namespace AspNet5EntityTest.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            Book book = _context.Book.Single(m => m.BookId == id);
-            _context.Book.Remove(book);
-            _context.SaveChanges();
+            Book book = _books.GetById(id, false);
+            _books.Remove(book);
             return RedirectToAction("Index");
         }
     }
