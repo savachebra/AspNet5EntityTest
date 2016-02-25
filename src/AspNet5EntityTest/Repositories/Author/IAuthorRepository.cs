@@ -11,7 +11,8 @@ namespace AspNet5EntityTest.Repositories
         IEnumerable<Author> ListAll();
         Author GetById(int authorId);
 
-        void Add(Author book);
-        void Update(Author book);
+        void Add(Author author);
+        void Update(Author author);
+        void Remove(Author author);
     }
 }

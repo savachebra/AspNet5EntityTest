@@ -4,23 +4,24 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using AspNet5EntityTest.Models;
 using Microsoft.AspNet.Authorization;
+using AspNet5EntityTest.Repositories;
 
 namespace AspNet5EntityTest.Controllers
 {
     [Authorize]
     public class AuthorsController : Controller
     {
-        private ApplicationDbContext _context;
+        private IAuthorRepository _authors;
 
-        public AuthorsController(ApplicationDbContext context)
+        public AuthorsController(IAuthorRepository authors)
         {
-            _context = context;    
+            _authors = authors;    
         }
 
         // GET: Authors
         public IActionResult Index()
         {
-            return View(_context.Author.ToList());
+            return View(_authors.ListAll());
         }
 
         // GET: Authors/Details/5
@@ -31,7 +32,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Author author = _context.Author.Single(m => m.AuthorId == id);
+            Author author = _authors.GetById(id.Value);
             if (author == null)
             {
                 return HttpNotFound();
@@ -53,8 +54,7 @@ namespace AspNet5EntityTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Author.Add(author);
-                _context.SaveChanges();
+                _authors.Add(author);
                 return RedirectToAction("Index");
             }
             return View(author);
@@ -68,7 +68,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Author author = _context.Author.Single(m => m.AuthorId == id);
+            Author author = _authors.GetById(id.Value);
             if (author == null)
             {
                 return HttpNotFound();
@@ -83,8 +83,7 @@ namespace AspNet5EntityTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Update(author);
-                _context.SaveChanges();
+                _authors.Update(author);
                 return RedirectToAction("Index");
             }
             return View(author);
@@ -99,7 +98,7 @@ namespace AspNet5EntityTest.Controllers
                 return HttpNotFound();
             }
 
-            Author author = _context.Author.Single(m => m.AuthorId == id);
+            Author author = _authors.GetById(id.Value);
             if (author == null)
             {
                 return HttpNotFound();
@@ -113,9 +112,8 @@ namespace AspNet5EntityTest.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            Author author = _context.Author.Single(m => m.AuthorId == id);
-            _context.Author.Remove(author);
-            _context.SaveChanges();
+            Author author = _authors.GetById(id);
+            _authors.Remove(author);
             return RedirectToAction("Index");
         }
     }

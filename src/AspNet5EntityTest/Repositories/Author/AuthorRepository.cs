@@ -40,5 +40,11 @@ namespace AspNet5EntityTest.Repositories
             _context.Author.Update(author);
             _context.SaveChanges();
         }
+
+        public void Remove(Author author)
+        {
+            _context.Author.Remove(author);
+            _context.SaveChanges();
+        }
     }
 }
